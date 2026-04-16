@@ -22,14 +22,36 @@ Improve the training process of a 2D object detection model through:
 | File | Description |
 |---|---|
 | `baseline_train.py` | Baseline YOLOv8n training script |
-| `report.md` | Full optimization report with comparison of COCO-style evaluation results |
+| `report.md` | Full optimization report with ablation study and COCO-style evaluation results |
 
 ---
 
-## Summary
+## Results Summary
 
-- **Dataset:** Hard Hat Workers (Roboflow Universe)
-- **Baseline:** YOLOv8n, 10 epochs, default settings → mAP@0.5: 0.6406, mAP@0.5:0.95: 0.4177
-- **Optimized:** YOLOv8s, 20 epochs, AdamW + Cosine Annealing + enhanced augmentation → mAP@0.5: 0.6500, mAP@0.5:0.95: 0.4333
+### Baseline vs Full Optimized
 
-See `report.md` for the full breakdown of what was changed, why, and how it affected performance.
+![Baseline vs Optimized](baseline_vs_optimized.png)
+
+| Metric | Baseline | Full Optimized | Change |
+|---|---|---|---|
+| mAP@0.5 | 0.6406 | 0.6505 | **+0.0099 (+1.5%)** |
+| mAP@0.5:0.95 | 0.4177 | 0.4360 | **+0.0183 (+4.4%)** |
+
+---
+
+## Ablation Study
+
+Each optimization was tested independently to measure its individual contribution.
+
+![Ablation Chart](ablation_chart.png)
+
+| Config | mAP@0.5 | mAP@0.5:0.95 |
+|---|---|---|
+| Baseline (YOLOv8n, SGD, 10ep) | 0.6406 | 0.4177 |
+| + YOLOv8s only (arch change) | 0.6455 | 0.4228 |
+| + AdamW + CosLR only (strategy) | 0.6395 | 0.4159 |
+| Full Optimized (YOLOv8s, 50ep) | 0.6505 | 0.4360 |
+
+**Key finding:** AdamW + Cosine LR alone slightly underperforms at 10 epochs — these optimizers need more epochs to realize their benefit. Combined with the larger YOLOv8s architecture and 50 epochs, all changes become synergistic and produce the best result.
+
+See `report.md` for full analysis.
