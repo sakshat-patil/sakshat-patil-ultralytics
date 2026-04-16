@@ -1,0 +1,6 @@
+Hard-Hat-Workers-1/
+runs/
+*.pt
+__pycache__/
+*.pyc
+.DS_Store
